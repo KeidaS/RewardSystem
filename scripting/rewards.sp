@@ -30,7 +30,9 @@ int hoursCT[128];
 int TSkinsCount;
 int CTSkinsCount;
 
-bool selected[MAXPLAYERS + 1];
+bool selected[MAXPLAYERS + 1] = false;
+
+int selectedTeam[MAXPLAYERS + 1];
 
 int selectedSkin[MAXPLAYERS + 1];
 
@@ -55,7 +57,11 @@ public void OnPlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!IsFakeClient(client)) {
 		if (IsClientInGame(client) && selected[client]) {
-			CreateTimer(1.6, Timer_ChangeSkin, client);
+			if (GetClientTeam(client) == selectedSkin[client]) {
+				CreateTimer(1.6, Timer_ChangeSkin, client);
+			} else {
+				PrintToChat(client, "Your team has been changed, use !rewards to equip another skin.");
+			}
 		}
 	}
 }
@@ -193,6 +199,7 @@ public int MenuHandler_Skin(Menu menu, MenuAction action, int param1, int param2
 				SetEntityModel(param1, TerroristSkin[skin]);
 				SetEntPropString(param1, Prop_Send, "m_szArmsModel", TerroristArms[skin]);
 				selected[param1] = true;
+				selectedTeam[param1] = 2;
 			} else {
 				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hoursT[skin], timePlayed[param1] / 3600);
 			}
@@ -201,6 +208,7 @@ public int MenuHandler_Skin(Menu menu, MenuAction action, int param1, int param2
 				SetEntityModel(param1, CounterTerroristSkin[skin]);
 				SetEntPropString(param1, Prop_Send, "m_szArmsModel", CounterTerroristArms[skin]);
 				selected[param1] = true;
+				selectedTeam[param1] = 3;
 			} else {
 				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hoursCT[skin], timePlayed[param1] / 3600);
 			}
@@ -213,6 +221,7 @@ public void OnMapEnd() {
 		if (IsClientInGame(i) && !IsFakeClient(i)) {
 			timePlayed[i] = 0;
 			selected[i] = false;
+			selectedTeam[i] = 0;
 		}
 	}
 }
@@ -220,4 +229,5 @@ public void OnMapEnd() {
 public void OnClientDisconnect(int client) {
 	timePlayed[client] = 0;
 	selected[client] = false;
+	selectedTeam[client] = 0;
 }
