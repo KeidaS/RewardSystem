@@ -25,7 +25,8 @@ String:TerroristArms[128][64];
 String:CounterTerroristSkin[128][64];
 String:CounterTerroristArms[128][64];
 
-int hours[128];
+int hoursT[128];
+int hoursCT[128];
 int TSkinsCount;
 int CTSkinsCount;
 
@@ -104,7 +105,7 @@ public void OnMapStart() {
 
 public Action Rewards (client, args) {
 	if (!IsFakeClient(client)) {
-		//OnClientPostAdminCheck(client);
+		OnClientPostAdminCheck(client);
 		if (IsClientInGame(client)) {
 			int team = GetClientTeam(client);
 			if (team == 2) { //T
@@ -143,10 +144,10 @@ public void Configure(const String:file[]) {
 			if (KvGetString(kv, "skin", skin, sizeof(skin)) && KvGetString(kv, "arms", arms, sizeof(arms)) && KvGetNum(kv, "hours")) {
 				strcopy(TerroristSkin[TSkinsCount], sizeof(TerroristSkin[]), skin);
 				strcopy(TerroristArms[TSkinsCount], sizeof(TerroristArms[]), arms);
-				hours[TSkinsCount] = KvGetNum(kv, "hours");
+				hoursT[TSkinsCount] = KvGetNum(kv, "hours");
 				Format(skinId, sizeof(skinId), "%d", TSkinsCount);
 				char item[128];
-				Format(item, sizeof(item), "%s -> Requires %i hours played", section, hours[TSkinsCount]);
+				Format(item, sizeof(item), "%s -> Requires %i hours played", section, hoursT[TSkinsCount]);
 				TSkinsCount++;
 				AddMenuItem(Tmenu, skinId, item);
 				PrecacheModel(skin, true);
@@ -164,10 +165,10 @@ public void Configure(const String:file[]) {
 			if (KvGetString(kv, "skin", skin, sizeof(skin)) && KvGetString(kv, "arms", arms, sizeof(arms)) && KvGetNum(kv, "hours")) {
 				strcopy(CounterTerroristSkin[CTSkinsCount], sizeof(CounterTerroristSkin[]), skin);
 				strcopy(CounterTerroristArms[CTSkinsCount], sizeof(CounterTerroristArms[]), arms);
-				hours[CTSkinsCount] = KvGetNum(kv, "hours");
+				hoursCT[CTSkinsCount] = KvGetNum(kv, "hours");
 				Format(skinId, sizeof(skinId), "%d", CTSkinsCount);
 				char item[128];
-				Format(item, sizeof(item), "%s -> Requires %i hours played", section, hours[CTSkinsCount]);
+				Format(item, sizeof(item), "%s -> Requires %i hours played", section, hoursCT[CTSkinsCount]);
 				CTSkinsCount++;
 				AddMenuItem(CTmenu, skinId, item);
 				PrecacheModel(skin, true);
@@ -188,20 +189,20 @@ public int MenuHandler_Skin(Menu menu, MenuAction action, int param1, int param2
 		selectedSkin[param1] = skin;
 		int team = GetClientTeam(param1);
 		if (team == 2) { //T
-			if (timePlayed[param1] >= hours[skin] * 3600) {
+			if (timePlayed[param1] >= hoursT[skin] * 3600) {
 				SetEntityModel(param1, TerroristSkin[skin]);
 				SetEntPropString(param1, Prop_Send, "m_szArmsModel", TerroristArms[skin]);
 				selected[param1] = true;
 			} else {
-				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hours[skin], timePlayed[param1] / 3600);
+				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hoursT[skin], timePlayed[param1] / 3600);
 			}
 		} else if (team == 3) { //CT
-			if (timePlayed[param1] >= hours[skin] * 3600) {
+			if (timePlayed[param1] >= hoursCT[skin] * 3600) {
 				SetEntityModel(param1, CounterTerroristSkin[skin]);
 				SetEntPropString(param1, Prop_Send, "m_szArmsModel", CounterTerroristArms[skin]);
 				selected[param1] = true;
 			} else {
-				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hours[skin], timePlayed[param1] / 3600);
+				PrintToChat(param1, "You have to play at least %i hours to use that skin. You have %i hours played. Check !rank for more info.", hoursCT[skin], timePlayed[param1] / 3600);
 			}
 		}
 	}
