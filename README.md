@@ -18,6 +18,6 @@ On the directory /configs/rewards you will have a rewards.cfg file.
 
 - Terrorist -> All the skins available for the Terrorists side.
 - Test T -> Name of the skin (it will be showed on the menu)
--> "skin" -> Path where there's the model.
--> "arms" -> Path where there's the arms of the model.
--> "hours" -> Time required for using that skin.
+- "skin" -> Path where there's the model.
+- "arms" -> Path where there's the arms of the model.
+- "hours" -> Time required for using that skin.
