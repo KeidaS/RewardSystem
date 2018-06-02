@@ -57,8 +57,8 @@ public void OnPlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!IsFakeClient(client)) {
 		if (IsClientInGame(client) && selected[client]) {
-			if (GetClientTeam(client) == selectedSkin[client]) {
-				CreateTimer(1.6, Timer_ChangeSkin, client);
+			if (GetClientTeam(client) == selectedTeam[client]) {
+				CreateTimer(2.0, Timer_ChangeSkin, client);
 			} else {
 				PrintToChat(client, "Your team has been changed, use !rewards to equip another skin.");
 			}
